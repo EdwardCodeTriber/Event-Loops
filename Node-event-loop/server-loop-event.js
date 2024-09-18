@@ -46,3 +46,69 @@ const questions = [
     timeLimit: 10,
   },
 ];
+
+let score = 0;
+// total quiz duration in seconds
+let totalQuizTime = 100;
+
+// Countdown Timer
+const startQuiz = () => {
+  let remainingQuizTime = totalQuizTime;
+
+  const quizTimer = setInterval(() => {
+    remainingQuizTime--;
+    console.log(`Remaining quiz time: ${remainingQuizTime}s`);
+
+    if (remainingQuizTime <= 0) {
+      clearInterval(quizTimer);
+      console.log("Time is up! Quiz ended.");
+      console.log(`Your final score: ${score}`);
+      process.exit();
+    }
+  }, 2000);
+
+  askQuestion(0, quizTimer);
+};
+
+// Asynchronously ask questions
+const askQuestion = (index, quizTimer) => {
+    if (index >= questions.length) {
+      clearInterval(quizTimer);
+      console.log(`Quiz finished! Your final score: ${score}`);
+      process.exit();
+    }
+  
+    const currentQuestion = questions[index];
+    console.log(`\nQuestion: ${currentQuestion.question}`);
+  
+    let questionTime = currentQuestion.timeLimit;
+  
+    const questionTimer = setInterval(() => {
+      questionTime--;
+      console.log(`Remaining time for this question: ${questionTime}s`);
+  
+      if (questionTime <= 0) {
+        clearInterval(questionTimer);
+        console.log("Time's up for this question!");
+        // Move to next question
+        askQuestion(index + 1, quizTimer);
+      }
+    }, 1000);
+  
+    const answer = readlineSync.question("Your answer: ", {
+      timeout: currentQuestion.timeLimit * 1000,
+      defaultInput: "",
+    });
+  
+    clearInterval(questionTimer);
+  
+    if (answer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+      console.log("Correct!");
+      score++;
+    } else {
+      console.log("Incorrect!");
+    }
+  
+    askQuestion(index + 1, quizTimer);
+  };
+  
