@@ -112,3 +112,7 @@ const askQuestion = (index, quizTimer) => {
     askQuestion(index + 1, quizTimer);
   };
   
+  // Start the quiz
+  console.log("Starting the quiz...");
+  startQuiz();
+  
